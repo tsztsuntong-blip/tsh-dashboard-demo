@@ -7,7 +7,7 @@
 <body><div class="box"><div class="spin"></div><div id="m">載入儀表板…</div></div>
 <script>
 (async()=>{
-const files=["c0.b64", "c1.b64", "c2.b64", "c3.b64"];
+const files=['h0a.hex', 'h0b.hex', 'h0c.hex', 'h0d.hex', 'h1a.hex', 'h1b.hex', 'h1c.hex', 'h1d.hex', 'h2a.hex', 'h2b.hex', 'h2c.hex', 'h2d.hex', 'h3a.hex', 'h3b.hex', 'h3c.hex', 'h3d.hex', 'h4a.hex', 'h4b.hex', 'h4c.hex', 'h4d.hex', 'h5a.hex', 'h5b.hex', 'h5c.hex', 'h5d.hex', 'h6a.hex', 'h6b.hex', 'h6c.hex', 'h6d.hex', 'h7.hex'];
 const m=document.getElementById('m');
 try{
   const parts=[];
@@ -16,10 +16,9 @@ try{
     if(!r.ok) throw new Error(f+' '+r.status);
     parts.push(await r.text());
   }
-  const b64=parts.join('').replace(/\s/g,'');
-  const bin=atob(b64);
-  const bytes=new Uint8Array(bin.length);
-  for(let i=0;i<bin.length;i++) bytes[i]=bin.charCodeAt(i);
+  const hex=parts.join('').replace(/\s/g,'');
+  const bytes=new Uint8Array(hex.length/2);
+  for(let i=0;i<bytes.length;i++) bytes[i]=parseInt(hex.substr(i*2,2),16);
   const ds=new DecompressionStream('gzip');
   const stream=new Response(bytes).body.pipeThrough(ds);
   const html=await new Response(stream).text();
