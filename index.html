@@ -1,32 +1,29 @@
 <!DOCTYPE html>
-<html lang="zh-HK">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<html lang="zh-HK"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>東信行 — 工程項目管理總覽</title>
-</head>
-<body>
-<!-- ver-2026-10-06d-relative-dates SELECT_PROJECT_DROPDOWN -->
+<style>body{margin:0;font-family:system-ui,sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;background:#e8eef2;color:#1F4E5F}
+.box{text-align:center;padding:24px}.spin{width:36px;height:36px;border:3px solid #d5e4ea;border-top-color:#EE8A6A;border-radius:50%;animation:s .8s linear infinite;margin:0 auto 14px}
+@keyframes s{to{transform:rotate(360deg)}}</style></head>
+<body><div class="box"><div class="spin"></div><div id="m">載入儀表板…</div></div>
 <script>
-(async function () {
-  const origin = location.href.replace(/[^/]*$/, '');
-  const files = ['d0.b64', 'd1.b64', 'd2.b64', 'd3.b64', 'd4.b64', 'd5.b64', 'd6.b64', 'd7.b64', 'd8.b64', 'd9.b64', 'd10.b64', 'd11.b64'];
-  const texts = await Promise.all(files.map(async f => {
-    const r = await fetch(origin + f);
-    if (!r.ok) throw new Error(f + ' HTTP ' + r.status);
-    return (await r.text()).trim();
-  }));
-  const b64 = texts.join('');
-  const bin = atob(b64);
-  const bytes = new Uint8Array(bin.length);
-  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
-  const html = await new Response(new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'))).text();
-  document.open();
-  document.write(html);
-  document.close();
-})().catch(err => {
-  document.body.innerHTML = '<pre style="padding:24px;font:14px/1.4 monospace;color:#b91c1c">載入失敗: ' + String(err) + '</pre>';
-});
-</script>
-</body>
-</html>
+(async()=>{
+const files=["c0.b64", "c1.b64", "c2.b64", "c3.b64"];
+const m=document.getElementById('m');
+try{
+  const parts=[];
+  for(const f of files){
+    const r=await fetch(f+(location.search.includes('nocache')?'?t='+Date.now():''));
+    if(!r.ok) throw new Error(f+' '+r.status);
+    parts.push(await r.text());
+  }
+  const b64=parts.join('').replace(/\s/g,'');
+  const bin=atob(b64);
+  const bytes=new Uint8Array(bin.length);
+  for(let i=0;i<bin.length;i++) bytes[i]=bin.charCodeAt(i);
+  const ds=new DecompressionStream('gzip');
+  const stream=new Response(bytes).body.pipeThrough(ds);
+  const html=await new Response(stream).text();
+  document.open();document.write(html);document.close();
+}catch(e){m.textContent='載入失敗：'+e.message;console.error(e);}
+})();
+</script></body></html>
