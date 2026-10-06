@@ -6,13 +6,13 @@
 <title>東信行 — 工程項目管理總覽</title>
 </head>
 <body>
-<!-- Dummy demo dashboard: 工程項目管理 -->
+<!-- Demo dashboard loader; payload is gzip+base64 in p0.b64… (ver-2026-10-06-relative-dates SELECT_PROJECT_DROPDOWN) -->
 <script>
 (async function () {
-  const base = 'https://raw.githubusercontent.com/tsztsuntong-blip/tsh-dashboard-demo/main/';
-  const files = ['p0.b64', 'p1.b64', 'p2.b64', 'p3.b64', 'p4.b64', 'p5.b64'];
+  const origin = location.href.replace(/[^/]*$/, '');
+  const files = ['p0.b64', 'p1.b64', 'p2.b64'];
   const texts = await Promise.all(files.map(async function (f) {
-    const r = await fetch(base + f);
+    const r = await fetch(origin + f);
     if (!r.ok) throw new Error(f + ' HTTP ' + r.status);
     return (await r.text()).trim();
   }));
@@ -20,11 +20,8 @@
   const bin = atob(b64);
   const bytes = new Uint8Array(bin.length);
   for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
-  const stream = new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'));
-  const html = await new Response(stream).text();
-  document.open();
-  document.write(html);
-  document.close();
+  const html = await new Response(new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'))).text();
+  document.open(); document.write(html); document.close();
 })().catch(function (err) {
   document.body.textContent = 'Failed to load dashboard: ' + err;
 });
