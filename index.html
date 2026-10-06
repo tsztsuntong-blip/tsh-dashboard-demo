@@ -6,11 +6,11 @@
 <title>東信行 — 工程項目管理總覽</title>
 </head>
 <body>
-<!-- ver-2026-10-06c-relative-dates SELECT_PROJECT_DROPDOWN -->
+<!-- ver-2026-10-06d-relative-dates SELECT_PROJECT_DROPDOWN -->
 <script>
 (async function () {
   const origin = location.href.replace(/[^/]*$/, '');
-  const files = ['c0.b64', 'c1.b64', 'c2.b64', 'c3.b64', 'c4.b64', 'c5.b64'];
+  const files = ['d0.b64', 'd1.b64', 'd2.b64', 'd3.b64', 'd4.b64', 'd5.b64', 'd6.b64', 'd7.b64', 'd8.b64', 'd9.b64', 'd10.b64', 'd11.b64'];
   const texts = await Promise.all(files.map(async f => {
     const r = await fetch(origin + f);
     if (!r.ok) throw new Error(f + ' HTTP ' + r.status);
