@@ -6,17 +6,13 @@
 <title>東信行 — 工程項目管理總覽</title>
 </head>
 <body>
-<!-- Demo dashboard loader; payload is gzip+base64 in p0.b64… (ver-2026-10-06-relative-dates SELECT_PROJECT_DROPDOWN) -->
+<!-- ver-2026-10-06-relative-dates SELECT_PROJECT_DROPDOWN -->
 <script>
 (async function () {
   const origin = location.href.replace(/[^/]*$/, '');
-  const files = ['p0.b64', 'p1.b64', 'p2.b64'];
-  const texts = await Promise.all(files.map(async function (f) {
-    const r = await fetch(origin + f);
-    if (!r.ok) throw new Error(f + ' HTTP ' + r.status);
-    return (await r.text()).trim();
-  }));
-  const b64 = texts.join('');
+  const r = await fetch(origin + 'p0.b64');
+  if (!r.ok) throw new Error('p0.b64 HTTP ' + r.status);
+  const b64 = (await r.text()).trim();
   const bin = atob(b64);
   const bytes = new Uint8Array(bin.length);
   for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
