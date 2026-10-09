@@ -65,21 +65,32 @@ html, body { width: 100%; overflow-x: hidden; }
 .btn-ghost { background: transparent; border-color: transparent; color: var(--teal-mid); font-weight: 600; }
 .btn-ghost:hover { background: var(--teal-soft); }
 
-.proj-select-wrap { position: relative; display: flex; align-items: center; border-radius: 999px; }
-.proj-select {
-  appearance: none; -webkit-appearance: none;
-  padding: 9px 32px 9px 16px; border-radius: 999px; font-size: 14px; font-weight: 600;
-  border: none; background: transparent; color: var(--text-muted); font-family: inherit; cursor: pointer;
-  max-width: 240px;
+.proj-search-wrap { position: relative; display: flex; align-items: center; border-radius: 999px; min-width: 0; }
+.proj-search {
+  width: 232px; max-width: 46vw;
+  padding: 9px 14px 9px 32px; border: none; border-radius: 999px;
+  background: transparent; color: var(--text); font-family: inherit;
+  font-size: 14px; font-weight: 600; outline: none;
 }
-.view-tabs .proj-select-wrap.active { background: var(--teal); }
-.view-tabs .proj-select-wrap.active .proj-select { color: #fff; }
-.view-tabs .proj-select-wrap:not(.active):hover { background: var(--grey-soft); }
-.proj-select-wrap::after {
-  content: "▾"; position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
-  font-size: 11px; pointer-events: none; opacity: .7;
+.proj-search::placeholder { color: var(--text-light); font-weight: 600; }
+.proj-search-wrap::before {
+  content: "⌕"; position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+  font-size: 15px; color: var(--text-muted); pointer-events: none;
 }
-.view-tabs .proj-select-wrap.active::after { color: #fff; }
+.view-tabs .proj-search-wrap:focus-within { background: var(--grey-soft); }
+.proj-suggest {
+  position: absolute; top: calc(100% + 8px); right: 0; width: min(360px, 80vw);
+  background: #fff; border-radius: 16px; box-shadow: var(--shadow-lg);
+  border: 1px solid rgba(31,78,95,.08); z-index: 40; overflow: hidden; padding: 6px;
+}
+.proj-suggest button {
+  display: block; width: 100%; text-align: left; padding: 9px 10px; border-radius: 10px;
+  font-size: 13px; font-weight: 600; color: var(--text);
+}
+.proj-suggest button:hover { background: var(--surface-2); }
+.proj-suggest .scode { color: var(--teal); font-variant-numeric: tabular-nums; }
+.proj-suggest .sname { display: block; font-weight: 500; color: var(--text-muted); font-size: 12px; margin-top: 2px; }
+.proj-suggest .empty { padding: 10px; text-align: left; }
 
 /* Bento */
 .bento {
@@ -111,7 +122,7 @@ html, body { width: 100%; overflow-x: hidden; }
 .tile.span-6 { grid-column: span 6; }
 .tile.span-7 { grid-column: span 7; }
 .tile.span-8 { grid-column: span 8; }
-.tile.span-12 { grid-column: span 12; }
+.tile.span-12 { grid-column: 1 / -1; }
 .tile.row-2 { grid-row: span 2; }
 
 .tile-label { font-size: 14px; font-weight: 600; color: var(--text-muted); margin-bottom: 8px; }
@@ -368,6 +379,29 @@ tr.clickable:hover td { background: var(--surface-2); }
 .hidden { display: none !important; }
 .empty { color: var(--text-light); font-size: 14px; padding: 16px 0; text-align: center; }
 .section-gap { margin-bottom: 0; } /* spacing comes from .bento gap only */
+.seg-toggle { display: inline-flex; background: var(--grey-soft); border-radius: 999px; padding: 3px; gap: 2px; flex-shrink: 0; }
+.seg-toggle button { padding: 5px 12px; border-radius: 999px; font-size: 12px; font-weight: 700; color: var(--text-muted); }
+.seg-toggle button.active { background: var(--teal); color: #fff; }
+.todo-group { margin-bottom: 6px; }
+.todo-group-h { font-size: 13px; font-weight: 700; color: var(--teal); margin: 10px 0 2px; }
+.todo-group-h .muted { font-weight: 500; }
+.todo-columns { display: grid; grid-template-columns: 1fr 1fr; column-gap: 28px; }
+.mini-metric-row {
+  grid-column: 1 / -1; width: 100%;
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--gap); align-items: stretch;
+}
+.mini-metric-row > .tile {
+  grid-column: auto !important; min-width: 0; width: 100%; height: 100%;
+  padding: 14px 14px 12px; box-sizing: border-box;
+}
+.mini-metric-row > .tile .tile-title { font-size: 14px; margin-bottom: 4px; line-height: 1.3; }
+.mini-metric-row > .tile .kpi-num,
+.mini-metric-row > .tile .kpi-num.sm { font-size: 28px; }
+.mini-metric-row > .tile .kpi-meta { font-size: 12px; margin-top: 4px; }
+.mini-metric-row > .tile .see-all { padding-top: 8px; font-size: 12px; }
+.budget-board table { min-width: 760px; }
+.status-note { font-size: 13px; color: var(--text-muted); margin-top: 8px; }
 .donut-wrap { display: flex; align-items: center; gap: 16px; flex: 1; }
 .donut-label { font-size: 14px; color: var(--text-muted); }
 .donut-label strong { display: block; font-size: 22px; color: var(--text); margin-top: 2px; }
@@ -393,7 +427,7 @@ tr.clickable:hover td { background: var(--surface-2); }
   .bento-label.span-12,
   .tile.span-2, .tile.span-3, .tile.span-4, .tile.span-5,
   .tile.span-6, .tile.span-7, .tile.span-8, .tile.span-12,
-  .kpi-row, .proj-grid {
+  .kpi-row, .proj-grid, .mini-metric-row {
     grid-column: 1 / -1 !important;
     width: 100%;
     max-width: 100%;
@@ -424,6 +458,17 @@ tr.clickable:hover td { background: var(--surface-2); }
   .stage-stepper { grid-template-columns: 1fr 1fr; }
   .gantt-row { grid-template-columns: 1fr; }
   .topbar { width: 100%; }
+  .view-tabs { width: 100%; }
+  .proj-search-wrap { flex: 1; }
+  .proj-search { width: 100%; max-width: none; }
+  .todo-columns { grid-template-columns: 1fr; }
+  .mini-metric-row { gap: 6px; }
+  .mini-metric-row > .tile { padding: 10px 6px; border-radius: 14px; }
+  .mini-metric-row > .tile .tile-title { font-size: 11px; }
+  .mini-metric-row > .tile .kpi-num,
+  .mini-metric-row > .tile .kpi-num.sm { font-size: 18px; }
+  .mini-metric-row > .tile .kpi-meta { font-size: 9px; }
+  .mini-metric-row > .tile .see-all { font-size: 11px; padding-top: 6px; }
 }
 @media (max-width: 360px) {
   .app { padding: 6px 2px 36px; }
@@ -535,7 +580,11 @@ function resolveDemoDates() {
 resolveDemoDates();
 const DATA_SNAPSHOT = JSON.parse(JSON.stringify(DATA));
 
-const state = { view: "portfolio", projectId: null, inboxFilter: "all", inboxMode: "list", drawerSubId: null };
+const state = {
+  view: "portfolio", projectId: null, inboxFilter: "all", inboxMode: "list", drawerSubId: null,
+  filterCat: "all", projectQuery: "", searchOpen: false, todoGroup: "project",
+  todoRef: null, todoDrawerOpen: false, keepScroll: false
+};
 
 function escapeHtml(s) {
   return String(s ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
@@ -633,10 +682,21 @@ function findSub(project, subId) {
 
 
 /* ---- Bento render helpers ---- */
-state.filterCat = state.filterCat || "all"; // portfolio pill filter
+const TODO_PREVIEW = 24;
+
+function normCode(s) {
+  return String(s || "").toLowerCase().replace(/[\s-]/g, "");
+}
+function projectSearchMatches(q) {
+  const query = normCode(q);
+  if (!query) return [];
+  return DATA.projects.filter(p => normCode(p.code).includes(query));
+}
 
 function openTableDrawer(title, html) {
   state.drawerSubId = null;
+  state.todoDrawerOpen = false;
+  state.todoRef = null;
   document.getElementById("drawer").innerHTML = `
     <button class="drawer-close" data-action="close-drawer">×</button>
     <h2>${escapeHtml(title)}</h2>
@@ -664,9 +724,16 @@ function renderBudgetDonut(pct) {
 
 function renderTopbar() {
   const showDemo = state.view === "project";
-  const options = DATA.projects.map(p =>
-    `<option value="${p.id}" ${state.projectId===p.id?"selected":""}>${escapeHtml(p.code)} · ${escapeHtml(p.name.slice(0,18))}${p.name.length>18?"…":""}</option>`
-  ).join("");
+  const q = state.projectQuery || "";
+  const matches = projectSearchMatches(q);
+  const suggest = (state.searchOpen && q.trim()) ? `
+    <div class="proj-suggest" id="proj-suggest">
+      ${matches.length ? matches.map(p => `
+        <button type="button" data-action="open-project" data-id="${p.id}">
+          <span class="scode">${escapeHtml(p.code)}</span>
+          <span class="sname">${escapeHtml(p.name)}</span>
+        </button>`).join("") : `<div class="empty">沒有符合的項目編號</div>`}
+    </div>` : "";
   return `
   <div class="topbar">
     <div class="brand">
@@ -675,11 +742,9 @@ function renderTopbar() {
     </div>
     <div class="view-tabs">
       <button class="view-tab ${state.view==="portfolio"?"active":""}" data-action="view-portfolio">總覽</button>
-      <div class="proj-select-wrap ${state.view==="project"?"active":""}">
-        <select class="proj-select" data-action="select-project" title="選擇項目">
-          <option value="" disabled ${!state.projectId?"selected":""}>選擇項目…</option>
-          ${options}
-        </select>
+      <div class="proj-search-wrap">
+        <input class="proj-search" type="search" inputmode="search" enterkeyhint="search" placeholder="搜尋項目編號…" value="${escapeHtml(q)}" data-action="project-search" aria-label="搜尋項目編號" title="輸入項目編號，例如 TSH-2026-014" autocomplete="off" spellcheck="false">
+        ${suggest}
       </div>
     </div>
     <div class="demo-controls">
@@ -825,35 +890,112 @@ function fullTableBudget() {
       </tr>`;
     }).join("")}</tbody></table></div>`;
 }
-function fullTableDeadlines(list) {
-  return `<div class="compact-list">${list.map(d => `
-    <div class="compact-row">
-      <div><div class="main">${escapeHtml(d.title)}</div><div class="sub">${escapeHtml(d.projectCode)} · ${fmtDateHK(d.date)}</div></div>
-      <div>${d.status==="overdue"?statusBadge("blocked"):d.status==="soon"?`<span class="badge badge-amber">即將</span>`:`<span class="badge badge-pending">稍後</span>`}</div>
-    </div>`).join("") || `<div class="empty">暫無</div>`}</div>`;
+function collectTodoItems() {
+  const items = [];
+  DATA.projects.forEach(p => {
+    (p.deadlines || []).forEach((d, index) => {
+      if (d.resolved) return;
+      const urgency = d.status === "overdue" ? 0 : d.status === "soon" ? 1 : 2;
+      const late = d.status === "overdue" ? Math.max(0, daysBetween(d.date, DATA.today)) : 0;
+      items.push({
+        kind: "deadline", id: String(index), index, projectId: p.id,
+        projectCode: p.code, projectName: p.name, title: d.title, party: "期限",
+        date: d.date, daysWaiting: late, urgency, badge: d.status || "upcoming"
+      });
+    });
+    (p.issues || []).forEach(i => {
+      if (i.status === "resolved") return;
+      items.push({
+        kind: "issue", id: i.id, index: null, projectId: p.id,
+        projectCode: p.code, projectName: p.name, title: i.title, party: i.party || "我方",
+        date: null, daysWaiting: i.daysWaiting || 0, urgency: 0, badge: "blocked"
+      });
+    });
+  });
+  items.sort((a, b) =>
+    a.urgency - b.urgency ||
+    (b.daysWaiting || 0) - (a.daysWaiting || 0) ||
+    String(a.date || "9999").localeCompare(String(b.date || "9999")) ||
+    a.projectCode.localeCompare(b.projectCode)
+  );
+  return items;
 }
-function fullTableIssues(list) {
-  return ["我方","判頭","客戶","政府部門","顧問"].map(party => {
-    const items = list.filter(i => i.party === party);
-    if (!items.length) return "";
-    return `<div class="issue-group"><h4>${escapeHtml(party)}（${items.length}）</h4>
-      ${items.map(i => `
-        <div class="issue-card" data-action="open-project" data-id="${i.projectId}">
-          <div><div style="font-weight:700">${escapeHtml(i.title)}</div><div class="muted" style="margin-top:2px">${escapeHtml(i.projectCode)}</div></div>
-          <div class="age">已等 ${i.daysWaiting} 日</div>
-        </div>`).join("")}
+function todoBadge(it) {
+  if (it.kind === "issue" || it.badge === "blocked") return `<span class="badge badge-blocked">受阻</span>`;
+  if (it.badge === "overdue") return `<span class="badge badge-blocked">逾期</span>`;
+  if (it.badge === "soon") return `<span class="badge badge-amber">即將</span>`;
+  return `<span class="badge badge-pending">稍後</span>`;
+}
+function renderTodoRow(it) {
+  const sub = it.kind === "issue"
+    ? `${it.projectCode} · 負責人 ${it.party} · 已等 ${it.daysWaiting} 日`
+    : `${it.projectCode} · ${fmtDateHK(it.date)} · 期限`;
+  const idx = it.index == null ? "" : String(it.index);
+  return `<div class="compact-row clickable" data-action="open-todo" data-kind="${it.kind}" data-project="${it.projectId}" data-id="${escapeHtml(it.id)}" data-index="${idx}">
+      <div><div class="main">${escapeHtml(it.title)}</div><div class="sub">${escapeHtml(sub)}</div></div>
+      <div>${todoBadge(it)}</div>
     </div>`;
-  }).join("") || `<div class="empty">暫無未解決問題</div>`;
+}
+function renderTodoGroups(items, mode) {
+  const groups = [];
+  if (mode === "party") {
+    const order = ["我方", "判頭", "客戶", "政府部門", "顧問", "期限"];
+    const buckets = new Map(order.map(k => [k, []]));
+    items.forEach(it => {
+      const k = it.party || "期限";
+      if (!buckets.has(k)) buckets.set(k, []);
+      buckets.get(k).push(it);
+    });
+    for (const [k, arr] of buckets) {
+      if (arr.length) groups.push({ label: k, hint: `${arr.length} 項`, rows: arr });
+    }
+  } else {
+    const buckets = new Map();
+    items.forEach(it => {
+      if (!buckets.has(it.projectId)) buckets.set(it.projectId, { label: it.projectCode, hint: it.projectName, rows: [] });
+      buckets.get(it.projectId).rows.push(it);
+    });
+    groups.push(...buckets.values());
+  }
+  if (!groups.length) return `<div class="empty">暫無待辦或阻礙</div>`;
+  return groups.map(g => `
+    <div class="todo-group">
+      <div class="todo-group-h">${escapeHtml(g.label)} <span class="muted">${escapeHtml(g.hint)}</span></div>
+      <div class="todo-columns">${g.rows.map(renderTodoRow).join("")}</div>
+    </div>`).join("");
+}
+function renderTodoTile(preview) {
+  const all = collectTodoItems();
+  const mode = state.todoGroup === "party" ? "party" : "project";
+  const shown = preview ? all.slice(0, TODO_PREVIEW) : all;
+  const more = preview && all.length > TODO_PREVIEW;
+  return `
+  <div class="tile span-12 todo-board">
+    <div class="tile-title">
+      <span>待辦與阻礙 <span class="muted" style="font-weight:500;font-size:14px">${all.length} 項</span></span>
+      <span class="seg-toggle">
+        <button type="button" class="${mode==="project"?"active":""}" data-action="todo-group" data-group="project">專案</button>
+        <button type="button" class="${mode==="party"?"active":""}" data-action="todo-group" data-group="party">負責人</button>
+      </span>
+    </div>
+    ${renderTodoGroups(shown, mode)}
+    ${more ? `<button class="see-all" data-action="drawer-table" data-table="todos">查看全部 →</button>` : ""}
+  </div>`;
 }
 
 function renderPortfolio() {
   const cat = state.filterCat || "all";
-  const projects = DATA.projects.filter(p => cat === "all" || p.category === cat);
+  const qRaw = (state.projectQuery || "").trim();
+  const q = normCode(qRaw);
+  const projects = DATA.projects.filter(p =>
+    (cat === "all" || p.category === cat) && (!q || normCode(p.code).includes(q))
+  );
   const allProjects = DATA.projects;
   const eng = allProjects.filter(p => p.category === "工程");
   const maint = allProjects.filter(p => p.category === "保養");
   const allIssues = allProjects.flatMap(p => getOpenIssues(p).map(i => ({...i, projectId: p.id, projectCode: p.code})));
   const allDeadlines = allProjects.flatMap(p => (p.deadlines||[]).map(d => ({...d, projectCode: p.code})))
+    .filter(d => !d.resolved)
     .sort((a,b) => a.date.localeCompare(b.date));
   const overdue = allDeadlines.filter(d => d.status === "overdue");
   const soon = allDeadlines.filter(d => d.status === "soon");
@@ -918,103 +1060,61 @@ function renderPortfolio() {
       </div>
     </div>`;
   }).join("");
-
-  const deadlineTile = `
-  <div class="tile span-6">
-    <div class="tile-title">逾期及即將到期</div>
-    <div class="compact-list">
-      ${allDeadlines.slice(0,3).map(d => `
-        <div class="compact-row">
-          <div><div class="main">${escapeHtml(d.title)}</div><div class="sub">${escapeHtml(d.projectCode)} · ${fmtDateHK(d.date)}</div></div>
-          <div>${d.status==="overdue"?statusBadge("blocked"):d.status==="soon"?`<span class="badge badge-amber">即將</span>`:`<span class="badge badge-pending">稍後</span>`}</div>
-        </div>`).join("") || `<div class="empty">暫無</div>`}
-    </div>
-    <button class="see-all" data-action="drawer-table" data-table="deadlines">查看全部 →</button>
-  </div>`;
-
-  const issuesTile = `
-  <div class="tile span-6">
-    <div class="tile-title">跨項目問題 <span class="muted" style="font-weight:500;font-size:14px">${allIssues.length} 項未解決</span></div>
-    <div class="compact-list">
-      ${allIssues.slice(0,3).map(i => `
-        <div class="compact-row clickable" data-action="open-project" data-id="${i.projectId}">
-          <div><div class="main">${escapeHtml(i.title)}</div><div class="sub">${escapeHtml(i.projectCode)} · ${escapeHtml(i.party)}</div></div>
-          <div class="age" style="color:var(--coral);font-weight:700;font-size:13px">已等 ${i.daysWaiting} 日</div>
-        </div>`).join("") || `<div class="empty">暫無</div>`}
-    </div>
-    <button class="see-all" data-action="drawer-table" data-table="issues">查看全部 →</button>
-  </div>`;
+  const projBody = projTiles || `<div class="empty" style="grid-column:1/-1;padding:18px 0">${qRaw ? `沒有符合「${escapeHtml(qRaw)}」的項目編號` : "暫無項目"}</div>`;
 
   const longLeadTile = `
-  <div class="tile span-4">
-    <div class="tile-title">貨期 Long Lead</div>
+  <div class="tile">
+    <div class="tile-title">貨期</div>
     <div class="kpi-num sm" style="color:${atRiskLead.length?"var(--coral)":"var(--teal)"}">${atRiskLead.length}</div>
-    <div class="kpi-meta">項 at risk　·　共 ${longLeadRows.length} 項</div>
-    <div class="compact-list" style="margin-top:12px">
-      ${longLeadRows.slice(0,2).map(l => `
-        <div class="compact-row"><div><div class="main">${escapeHtml(l.item.slice(0,22))}${l.item.length>22?"…":""}</div>
-        <div class="sub">${escapeHtml(l.projectCode)}${l.atRisk?" · ⚠":""}</div></div></div>`).join("")}
-    </div>
+    <div class="kpi-meta">項 at risk · 共 ${longLeadRows.length}</div>
     <button class="see-all" data-action="drawer-table" data-table="longlead">查看全部 →</button>
   </div>`;
 
   const dscTile = `
-  <div class="tile span-4">
-    <div class="tile-title">DSC 指定分包</div>
+  <div class="tile">
+    <div class="tile-title">DSC</div>
     <div class="kpi-num sm" style="color:var(--teal)">${DATA.dscs.length}</div>
-    <div class="kpi-meta">間分包商</div>
-    <div class="compact-list" style="margin-top:12px">
-      ${DATA.dscs.slice(0,2).map(d => `
-        <div class="compact-row"><div><div class="main">${escapeHtml(d.name)}</div>
-        <div class="sub">${escapeHtml(d.trade)} · ${statusBadge(d.status)}</div></div></div>`).join("")}
-    </div>
+    <div class="kpi-meta">指定分包</div>
     <button class="see-all" data-action="drawer-table" data-table="dsc">查看全部 →</button>
   </div>`;
 
   const subTile = `
-  <div class="tile span-4">
+  <div class="tile">
     <div class="tile-title">呈交文件</div>
     <div class="kpi-num sm" style="color:var(--amber)">${pendingSubs.length}</div>
     <div class="kpi-meta">份待批／退回</div>
-    <div class="compact-list" style="margin-top:12px">
-      ${pendingSubs.slice(0,2).map(s => `
-        <div class="compact-row"><div><div class="main">${escapeHtml(s.doc.slice(0,20))}${s.doc.length>20?"…":""}</div>
-        <div class="sub">${escapeHtml(s.no)} · ${statusBadge(s.status)}</div></div></div>`).join("")}
-    </div>
     <button class="see-all" data-action="drawer-table" data-table="subs">查看全部 →</button>
   </div>`;
 
+  const incompleteDocs = DATA.projects.filter(p => DATA.contractorDocs.some(d => !p.contractorChecklist?.[d])).length;
   const docsTile = `
-  <div class="tile span-6">
+  <div class="tile">
     <div class="tile-title">判頭文件資料</div>
-    <div class="kpi-meta" style="margin-bottom:8px">交俾判頭嘅文件齊備度</div>
-    <div class="compact-list">
-      ${DATA.projects.slice(0,3).map(p => {
-        const docs = DATA.contractorDocs;
-        const ok = docs.filter(d => p.contractorChecklist?.[d]).length;
-        return `<div class="compact-row clickable" data-action="open-project" data-id="${p.id}">
-          <div><div class="main">${escapeHtml(p.code)}</div><div class="sub">${ok}/${docs.length} 已交</div></div>
-          <div class="bar-track" style="width:80px"><div class="bar-fill" style="width:${Math.round(ok/docs.length*100)}%"></div></div>
-        </div>`;
-      }).join("")}
-    </div>
+    <div class="kpi-num sm" style="color:${incompleteDocs?"var(--coral)":"var(--green)"}">${incompleteDocs}</div>
+    <div class="kpi-meta">項文件未齊</div>
     <button class="see-all" data-action="drawer-table" data-table="docs">查看全部 →</button>
   </div>`;
 
   const budgetTile = `
-  <div class="tile span-6">
-    <div class="tile-title">Budget vs 工期</div>
-    <div class="compact-list">
-      ${DATA.projects.slice(0,3).map(p => {
+  <div class="tile span-12 budget-board">
+    <div class="tile-title">造價與工期總表</div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>項目</th><th>PIC</th><th>合約+VO</th><th>實際成本</th><th>成本%</th><th>原定完工</th><th>預測</th><th>工期</th></tr></thead>
+      <tbody>${DATA.projects.map(p => {
         const rev = p.contractSum + p.voNet;
         const pct = rev ? Math.round(p.actualCost / rev * 100) : 0;
-        return `<div class="compact-row clickable" data-action="open-project" data-id="${p.id}">
-          <div><div class="main">${escapeHtml(p.code)}</div>
-          <div class="sub">成本 ${pct}%　·　${p.daysDelayed>0?"+"+p.daysDelayed+"日":"準時"}</div></div>
-          <div class="bar-track" style="width:80px"><div class="bar-fill ${pct>100?"over":pct>85?"warn":""}" style="width:${Math.min(100,pct)}%"></div></div>
-        </div>`;
-      }).join("")}
-    </div>
+        return `<tr class="clickable" data-action="open-project" data-id="${p.id}">
+          <td><div style="font-weight:700">${escapeHtml(p.code)}</div><div class="muted" style="font-size:12px">${escapeHtml(p.name)}</div></td>
+          <td>${escapeHtml(p.pic)}</td>
+          <td class="money">${fmtMoneyShort(rev)}</td>
+          <td class="money">${fmtMoneyShort(p.actualCost)}</td>
+          <td style="min-width:110px"><div>${pct}%</div><div class="bar-track"><div class="bar-fill ${pct>100?"over":pct>85?"warn":""}" style="width:${Math.min(100,pct)}%"></div></div></td>
+          <td>${fmtDateHK(p.plannedEnd)}</td>
+          <td>${fmtDateHK(p.forecastEnd)}</td>
+          <td class="${p.daysDelayed>0?"delay-neg":"delay-ok"}">${p.daysDelayed>0?"+"+p.daysDelayed+"日":"準時"}</td>
+        </tr>`;
+      }).join("")}</tbody>
+    </table></div>
     <button class="see-all" data-action="drawer-table" data-table="budget">查看全部 →</button>
   </div>`;
 
@@ -1023,8 +1123,10 @@ function renderPortfolio() {
     <div class="bento">
       ${hero}
       <div class="bento-label span-12">項目一覽 <span class="muted" style="font-weight:500;font-size:14px">點擊進入詳情</span></div>
-      <div class="proj-grid">${projTiles}</div>
-      ${deadlineTile}${issuesTile}${longLeadTile}${dscTile}${subTile}${docsTile}${budgetTile}
+      <div class="proj-grid">${projBody}</div>
+      ${renderTodoTile(true)}
+      ${budgetTile}
+      <div class="mini-metric-row">${longLeadTile}${dscTile}${subTile}${docsTile}</div>
     </div>
   `;
 }
@@ -1240,7 +1342,74 @@ function openDrawer(subId) {
 }
 function closeDrawer() {
   state.drawerSubId = null;
+  state.todoDrawerOpen = false;
+  state.todoRef = null;
   document.getElementById("overlay").classList.remove("open");
+}
+function openTodoDrawer(ref) {
+  const p = projectById(ref.projectId);
+  if (!p) return;
+  state.todoRef = ref;
+  state.todoDrawerOpen = true;
+  state.drawerSubId = null;
+  let title = "";
+  let fields = "";
+  let resolved = false;
+  let stageBadge = "";
+  if (ref.kind === "issue") {
+    const iss = (p.issues || []).find(i => i.id === ref.id);
+    if (!iss) return;
+    title = iss.title;
+    resolved = iss.status === "resolved";
+    stageBadge = resolved ? `<span class="badge badge-done">已解決</span>` : `<span class="badge badge-blocked">受阻</span>`;
+    fields = `
+      <div class="d-field"><div class="fl">類型</div><div class="fv">阻礙</div></div>
+      <div class="d-field"><div class="fl">項目</div><div class="fv"><button type="button" class="btn btn-sm" data-action="open-project" data-id="${p.id}">${escapeHtml(p.code)}</button> ${escapeHtml(p.name)}</div></div>
+      <div class="d-field"><div class="fl">負責人</div><div class="fv">${escapeHtml(iss.party)}</div></div>
+      <div class="d-field"><div class="fl">已等候</div><div class="fv">${iss.daysWaiting || 0} 日</div></div>`;
+  } else {
+    const d = (p.deadlines || [])[ref.index];
+    if (!d) return;
+    title = d.title;
+    resolved = !!d.resolved;
+    const label = d.status === "overdue" ? "逾期" : d.status === "soon" ? "即將" : "稍後";
+    stageBadge = resolved ? `<span class="badge badge-done">已解決</span>` : (d.status === "overdue" ? `<span class="badge badge-blocked">逾期</span>` : d.status === "soon" ? `<span class="badge badge-amber">即將</span>` : `<span class="badge badge-pending">稍後</span>`);
+    fields = `
+      <div class="d-field"><div class="fl">類型</div><div class="fv">期限 · ${label}</div></div>
+      <div class="d-field"><div class="fl">項目</div><div class="fv"><button type="button" class="btn btn-sm" data-action="open-project" data-id="${p.id}">${escapeHtml(p.code)}</button> ${escapeHtml(p.name)}</div></div>
+      <div class="d-field"><div class="fl">日期</div><div class="fv">${fmtDate(d.date)}（${fmtDateHK(d.date)}）</div></div>
+      <div class="d-field"><div class="fl">負責人</div><div class="fv">期限</div></div>`;
+  }
+  document.getElementById("drawer").innerHTML = `
+    <button class="drawer-close" data-action="close-drawer">×</button>
+    <h2>${escapeHtml(title)}</h2>
+    <div class="drawer-stage">${escapeHtml(p.code)}　·　${stageBadge}</div>
+    ${fields}
+    <div class="d-field"><div class="fl">狀態</div><div class="fv">
+      <div class="seg-toggle">
+        <button type="button" data-action="set-todo-status" data-status="open" class="${resolved?"":"active"}">受阻</button>
+        <button type="button" data-action="set-todo-status" data-status="resolved" class="${resolved?"active":""}">已解決</button>
+      </div>
+      <div class="status-note">示範資料只會喺呢個頁面記憶體入面更新。</div>
+    </div></div>`;
+  document.getElementById("overlay").classList.add("open");
+}
+function setTodoStatus(status) {
+  const ref = state.todoRef;
+  if (!ref) return;
+  const p = projectById(ref.projectId);
+  if (!p) return;
+  if (ref.kind === "issue") {
+    const iss = (p.issues || []).find(i => i.id === ref.id);
+    if (!iss) return;
+    iss.status = status === "resolved" ? "resolved" : "open";
+  } else if (ref.kind === "deadline") {
+    const d = (p.deadlines || [])[ref.index];
+    if (!d) return;
+    d.resolved = status === "resolved";
+  }
+  state.keepScroll = true;
+  render();
 }
 
 function demoAdvance() {
@@ -1271,6 +1440,7 @@ function demoReset() {
 
 function render() {
   const app = document.getElementById("app");
+  const y = window.scrollY;
   let body = "";
   if (state.view === "portfolio") {
     body = renderPortfolio();
@@ -1280,10 +1450,36 @@ function render() {
     body = renderProject(p);
   }
   app.innerHTML = renderTopbar() + `<div class="view-panel">${body}</div>`;
+  if (state.keepScroll) window.scrollTo(0, y);
+  state.keepScroll = false;
   if (state.drawerSubId && state.view === "project") openDrawer(state.drawerSubId);
+  else if (state.todoDrawerOpen && state.todoRef && state.view === "portfolio") openTodoDrawer(state.todoRef);
+}
+function openProject(id) {
+  state.projectId = id;
+  state.view = "project";
+  state.inboxFilter = "all";
+  state.inboxMode = "list";
+  state.searchOpen = false;
+  state.keepScroll = false;
+  closeDrawer();
+  render();
+  window.scrollTo(0, 0);
+}
+function focusProjectSearch(pos) {
+  const input = document.querySelector(".proj-search");
+  if (!input) return;
+  input.focus();
+  const n = Math.min(pos == null ? input.value.length : pos, input.value.length);
+  try { input.setSelectionRange(n, n); } catch (err) {}
 }
 
 document.addEventListener("click", (e) => {
+  if (!e.target.closest(".proj-search-wrap")) {
+    const sug = document.getElementById("proj-suggest");
+    if (sug) sug.remove();
+    state.searchOpen = false;
+  }
   const t = e.target.closest("[data-action]");
   if (!t) {
     if (e.target.id === "overlay") closeDrawer();
@@ -1293,11 +1489,23 @@ document.addEventListener("click", (e) => {
   if (action === "view-portfolio") {
     state.view = "portfolio"; state.projectId = null;
     state.inboxFilter = "all"; state.inboxMode = "list";
+    state.searchOpen = false;
     closeDrawer(); render();
   } else if (action === "open-project") {
-    state.projectId = t.dataset.id; state.view = "project";
-    state.inboxFilter = "all"; state.inboxMode = "list";
-    closeDrawer(); render(); window.scrollTo(0, 0);
+    openProject(t.dataset.id);
+  } else if (action === "open-todo") {
+    openTodoDrawer({
+      kind: t.dataset.kind,
+      projectId: t.dataset.project,
+      id: t.dataset.id,
+      index: t.dataset.index === "" || t.dataset.index == null ? null : Number(t.dataset.index)
+    });
+  } else if (action === "todo-group") {
+    state.todoGroup = t.dataset.group === "party" ? "party" : "project";
+    state.keepScroll = true;
+    render();
+  } else if (action === "set-todo-status") {
+    setTodoStatus(t.dataset.status);
   } else if (action === "open-drawer") {
     if (t.dataset.sub) openDrawer(t.dataset.sub);
   } else if (action === "close-drawer") {
@@ -1314,15 +1522,12 @@ document.addEventListener("click", (e) => {
     state.filterCat = t.dataset.cat; render();
   } else if (action === "drawer-table") {
     const kind = t.dataset.table;
-    const allIssues = DATA.projects.flatMap(p => getOpenIssues(p).map(i => ({...i, projectId: p.id, projectCode: p.code})));
-    const allDeadlines = DATA.projects.flatMap(p => (p.deadlines||[]).map(d => ({...d, projectCode: p.code}))).sort((a,b) => a.date.localeCompare(b.date));
     if (kind === "longlead") openTableDrawer("貨期 Long Lead Items", fullTableLongLead());
     else if (kind === "dsc") openTableDrawer("DSC 指定分包商", fullTableDsc());
     else if (kind === "subs") openTableDrawer("呈交文件摘要", fullTableSubs());
     else if (kind === "docs") openTableDrawer("交俾判頭嘅文件／資料", fullTableDocs());
-    else if (kind === "budget") openTableDrawer("Budget vs Actual ／ 工期", fullTableBudget());
-    else if (kind === "deadlines") openTableDrawer("逾期及即將到期", fullTableDeadlines(allDeadlines));
-    else if (kind === "issues") openTableDrawer("跨項目問題清單", fullTableIssues(allIssues));
+    else if (kind === "budget") openTableDrawer("造價與工期總表", fullTableBudget());
+    else if (kind === "todos") openTableDrawer("待辦與阻礙", renderTodoGroups(collectTodoItems(), state.todoGroup === "party" ? "party" : "project"));
     else if (kind === "inbox") {
       const project = projectById(state.projectId);
       const inbox = project ? (project.inbox || []) : [];
@@ -1341,21 +1546,48 @@ document.addEventListener("click", (e) => {
   }
 });
 
-document.addEventListener("change", (e) => {
-  const t = e.target.closest("[data-action='select-project']");
+document.addEventListener("input", (e) => {
+  const t = e.target.closest("[data-action='project-search']");
   if (!t) return;
-  const id = t.value;
-  if (!id) return;
-  state.projectId = id;
-  state.view = "project";
-  state.inboxFilter = "all";
-  state.inboxMode = "list";
-  closeDrawer();
+  state.projectQuery = t.value;
+  state.searchOpen = true;
+  state.keepScroll = true;
+  if (String(t.value || "").trim()) {
+    state.view = "portfolio";
+    state.projectId = null;
+    state.drawerSubId = null;
+    if (!state.todoDrawerOpen) document.getElementById("overlay").classList.remove("open");
+  }
+  const pos = t.selectionStart;
   render();
-  window.scrollTo(0, 0);
+  focusProjectSearch(pos);
 });
-
-document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeDrawer(); });
+document.addEventListener("focusin", (e) => {
+  const t = e.target.closest("[data-action='project-search']");
+  if (!t || state.searchOpen || !String(t.value || "").trim()) return;
+  state.searchOpen = true;
+  state.keepScroll = true;
+  const pos = t.selectionStart;
+  render();
+  focusProjectSearch(pos);
+});
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") {
+    state.searchOpen = false;
+    const sug = document.getElementById("proj-suggest");
+    if (sug) sug.remove();
+    closeDrawer();
+    return;
+  }
+  if (e.key === "Enter" && e.target.closest("[data-action='project-search']")) {
+    e.preventDefault();
+    const q = normCode(state.projectQuery);
+    const matches = projectSearchMatches(state.projectQuery);
+    const exact = DATA.projects.find(p => normCode(p.code) === q);
+    const pick = exact || (matches.length === 1 ? matches[0] : null);
+    if (pick) openProject(pick.id);
+  }
+});
 
 render();
 
